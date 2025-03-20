@@ -9,7 +9,6 @@ import { FileUploadModule } from './file-upload/file-upload.module';
 import { OrdersModule } from './orders/orders.module';
 import { MessageModule } from './message/message.module';
 import { NotificationModule } from './notification/notification.module';
-import { WalletModule } from './wallet/wallet.module';
 import { TransactionModule } from './transactions/transaction.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
@@ -40,7 +39,6 @@ import { UserEntity } from './entity/user.entity';
     OrdersModule,
     MessageModule,
     NotificationModule,
-    WalletModule,
     TransactionModule,
   ],
 })

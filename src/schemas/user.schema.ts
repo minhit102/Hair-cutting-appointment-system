@@ -7,10 +7,7 @@ export type UserDocument = HydratedDocument<User>;
 @Schema({ timestamps: true })
 export class User {
   @Prop({ required: true })
-  firstName: string;
-
-  @Prop({ required: true })
-  lastName: string;
+  username: string;
 
   @Prop({ unique: false })
   phone: string;
@@ -20,9 +17,6 @@ export class User {
 
   @Prop({ required: true })
   password: string;
-
-  @Prop({ required: false })
-  dayOfBirth: Date;
 
   @Prop({ required: false })
   address: string;
@@ -35,6 +29,9 @@ export class User {
 
   @Prop()
   createdAt: Date;
+
+  @Prop({ required: false, default: false })
+  isDeleted: Boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

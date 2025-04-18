@@ -3,7 +3,11 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import * as bcrypt from 'bcrypt';
 
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
@@ -21,6 +25,7 @@ import { VerifySignatureDto } from './dto/verify-signature.dto';
 import { Redis } from 'ioredis';
 import { randomBytes } from 'crypto';
 import Web3 from 'web3';
+import { ApiError } from 'src/common/errors/api.error';
 
 @Injectable()
 export class AuthService {
@@ -32,45 +37,41 @@ export class AuthService {
     @InjectModel(Otp.name) private otpModel: Model<OtpDocument>,
     private otpService: OtpService,
     private passwordService: PasswordService,
-  ) {
-    this.redisClient = new Redis();
-    this.web3 = new Web3(
-      'https://mainnet.infura.io/v3/88a7dff16f4a47448704e143385db081',
-    );
-  }
+  ) {}
 
-  async register(registerUserDto: RegisterUserDto): Promise<ResponseDto<any>> {
-    const { email, password, lastName, firstName } = registerUserDto;
+  async register(registerUserDto: RegisterUserDto): Promise<any> {
+    const { email, password, username } = registerUserDto;
     const existUser = await this.userModel.findOne({
       email: email,
     });
     if (existUser) {
-      throw new BadRequestException('Email already in use.');
+      throw new ApiError('E100', 'User already exists');
     }
     const hashPassword = await this.passwordService.hashPassword(password);
 
     const newUser = await this.userModel.create({
-      lastName: lastName,
-      firstName: firstName,
+      username: username,
       email: email,
       password: hashPassword,
     });
-    const userWithoutPassword = newUser.toObject();
-    delete userWithoutPassword.password;
-    return new ResponseDto(HttpStatus.OK, HttpMessage.OK, userWithoutPassword);
+    return new ResponseDto(HttpStatus.OK, HttpMessage.OK);
   }
 
-  async signIn(signInDto: SignInDto) {
+  async login(signInDto: SignInDto) {
     const user = await this.userModel.findOne({ email: signInDto.email });
     if (!user) {
-      throw new BadRequestException('User not found ');
+      throw new ApiError('2200', 'You are not allowed to access this data');
     }
     const isMatch = await this.passwordService.comparePassword(
       signInDto.password,
       user.password,
     );
     if (!isMatch) {
-      throw new BadRequestException();
+      throw new UnauthorizedException({
+        statusCode: 401,
+        message: 'Invalid credentials',
+        error: 'Unauthorized',
+      });
     }
     const payload = {
       id: user._id,
@@ -84,6 +85,7 @@ export class AuthService {
     };
     return data;
   }
+
   async forgotPassword(
     forgotPasswordDto: ForgotPasswordDto,
   ): Promise<ResponseDto<any>> {

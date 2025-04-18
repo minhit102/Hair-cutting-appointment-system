@@ -13,8 +13,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('login')
   async signIn(@Body() signInDto: SignInDto): Promise<ResponseDto<any>> {
-    const response = await this.authService.signIn(signInDto);
-    console.log('Loi');
+    const response = await this.authService.login(signInDto);
     return new ResponseDto(HttpStatus.OK, HttpMessage.OK, response);
   }
 

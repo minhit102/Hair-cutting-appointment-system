@@ -17,6 +17,7 @@ import { CreateUserEntityDto } from './dto/create-user-entity';
 import { UserEntity } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FileUploadService } from 'src/common/service/file-upload.service';
 
 @Injectable()
 export class UsersService {
@@ -26,6 +27,7 @@ export class UsersService {
     // @InjectRepository(UserEntity)
     // private usersRepository: Repository<UserEntity>,
     private authService: AuthService,
+    private fileUploadService: FileUploadService,
   ) {}
 
   async getProfileUser(id: string) {
@@ -103,9 +105,9 @@ export class UsersService {
     );
     return new ResponseDto(HttpStatus.OK, HttpMessage.OK, userUpdate);
   }
-  async addUser(createUserDto: CreateUserDto) {
-    this.authService.register(createUserDto);
-  }
+  // async addUser(createUserDto: CreateUserDto) {
+  //   this.authService.register(createUserDto);
+  // }
 
   async getListCustomer(
     getCustomerParamsDto: GetCustomerParamsDto,
@@ -216,4 +218,27 @@ export class UsersService {
   //   const user = await this.usersRepository.create(createUserEntityDto);
   //   return new ResponseDto(HttpStatus.OK, HttpMessage.OK, user);
   // }
+
+  async updateAvt({ userId, file }: any) {
+    const user = await this.userModel.findById(userId);
+    if (!['image/jpeg', 'image/png'].includes(file.mimetype)) {
+      throw new BadRequestException(
+        'Invalid file type, only JPEG and PNG are allowed.',
+      );
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      throw new BadRequestException('File size exceeds 10MB.');
+    }
+    const avtUrl = await this.fileUploadService.uploadImages(file);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    const updateUser = await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        imgAvt: avtUrl,
+      },
+      { new: true },
+    );
+  }
 }

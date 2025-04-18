@@ -19,6 +19,7 @@ export class Notification {
     required: true,
   })
   title: string;
+
   @Prop({
     type: String,
     required: true,

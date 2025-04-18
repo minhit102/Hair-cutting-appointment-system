@@ -15,20 +15,17 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   password: string;
 
   @Prop({ required: false })
   address: string;
 
+  @Prop({ required: false })
+  imgAvt: string;
+
   @Prop({ required: true, enum: Role, type: String, default: Role.Customer })
   role: Role;
-
-  @Prop()
-  updatedAt: Date;
-
-  @Prop()
-  createdAt: Date;
 
   @Prop({ required: false, default: false })
   isDeleted: Boolean;

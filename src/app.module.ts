@@ -12,6 +12,8 @@ import { NotificationModule } from './notification/notification.module';
 import { TransactionModule } from './transactions/transaction.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -20,17 +22,6 @@ import { UserEntity } from './entity/user.entity';
       envFilePath: '.env',
     }),
     MongooseModule.forRoot(process.env.URL_MONGODB),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '123456',
-      database: 'test',
-      entities: [UserEntity],
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
     UsersModule,
     AuthModule,
     MailModule,
@@ -41,5 +32,7 @@ import { UserEntity } from './entity/user.entity';
     NotificationModule,
     TransactionModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

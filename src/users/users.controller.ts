@@ -8,6 +8,9 @@ import {
   Put,
   Param,
   Query,
+  UseInterceptors,
+  UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Roles } from 'src/common/roles.decorator';
@@ -19,6 +22,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { GetCustomerParamsDto } from './dto/get-customer.dto';
 import { UserEntity } from 'src/entity/user.entity';
 import { CreateUserEntityDto } from './dto/create-user-entity';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { GetUser } from 'src/auth/get-user.decorator';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -51,11 +56,30 @@ export class UsersController {
     return this.usersService.updateProfile(req.user.id, updateUserDto);
   }
 
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.Admin)
+  // @Post()
+  // addUser(@Body() createUserDto: CreateUserDto) {
+  //   return this.usersService.addUser(createUserDto);
+  // }
+
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.Admin)
+  // @Post()
+  // updateImageAvt(@Body() createUserDto: CreateUserDto) {
+  //   return this.usersService.addUser(createUserDto);
+  // }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  @Post()
-  addUser(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.addUser(createUserDto);
+  @Put(':id')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+    }),
+  )
+  async updateAvt(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
+    return this.usersService.updateAvt({ userId: user.id, file }); // hoặc truyền trực tiếp nếu service không cần array
   }
 
   // @Post('createUser')

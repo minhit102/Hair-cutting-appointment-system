@@ -43,10 +43,12 @@ export class ProductController {
   getProduct(@Query() getProductParamsDto: GetProductParamsDto) {
     return this.productService.getProduct(getProductParamsDto);
   }
+
   @Get(':id')
   async getProductDetail(@Param('id') id: string) {
     return this.productService.getProductDetail(id);
   }
+
   @Put(':id')
   @UseInterceptors(
     FilesInterceptor('images', 10, {

@@ -12,9 +12,8 @@ import { VerifySignatureDto } from './dto/verify-signature.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('login')
-  async signIn(@Body() signInDto: SignInDto): Promise<ResponseDto<any>> {
-    const response = await this.authService.login(signInDto);
-    return new ResponseDto(HttpStatus.OK, HttpMessage.OK, response);
+  async signIn(@Body() signInDto: SignInDto) {
+    return this.authService.login(signInDto);
   }
 
   @Post('register')
@@ -37,7 +36,7 @@ export class AuthController {
     return new ResponseDto(HttpStatus.OK, HttpMessage.OK, response);
   }
 
-  @Post('verify-signature')
+  @Post('verify-account')
   async verifySignature(@Body() verifySignatureDto: VerifySignatureDto) {
     return this.authService.verifySignature(verifySignatureDto);
   }

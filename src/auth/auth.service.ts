@@ -60,18 +60,14 @@ export class AuthService {
   async login(signInDto: SignInDto) {
     const user = await this.userModel.findOne({ email: signInDto.email });
     if (!user) {
-      throw new ApiError('2200', 'You are not allowed to access this data');
+      throw new UnauthorizedException('Invalid credentials');
     }
     const isMatch = await this.passwordService.comparePassword(
       signInDto.password,
       user.password,
     );
     if (!isMatch) {
-      throw new UnauthorizedException({
-        statusCode: 401,
-        message: 'Invalid credentials',
-        error: 'Unauthorized',
-      });
+      throw new UnauthorizedException('Invalid credentials');
     }
     const payload = {
       id: user._id,
@@ -81,9 +77,10 @@ export class AuthService {
     const data = {
       id: user._id,
       email: user.email,
+      role: user.role,
       accessToken: this.jwtService.sign(payload),
     };
-    return data;
+    return new ResponseDto(HttpStatus.OK, HttpMessage.OK, data);
   }
 
   async forgotPassword(

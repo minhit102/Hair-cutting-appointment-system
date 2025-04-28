@@ -5,7 +5,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../schemas/user.schema';
 import { AuthModule } from 'src/auth/auth.module';
 import { Order, OrderSchema } from 'src/schemas/orders.schema';
-import { UserEntity } from 'src/entity/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FileUploadService } from 'src/common/service/file-upload.service';
 @Module({

@@ -20,7 +20,6 @@ import { JwtAuthGuard } from 'src/common/guards/auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetCustomerParamsDto } from './dto/get-customer.dto';
-import { UserEntity } from 'src/entity/user.entity';
 import { CreateUserEntityDto } from './dto/create-user-entity';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { GetUser } from 'src/auth/get-user.decorator';

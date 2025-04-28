@@ -11,7 +11,6 @@ import { MessageModule } from './message/message.module';
 import { NotificationModule } from './notification/notification.module';
 import { TransactionModule } from './transactions/transaction.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './entity/user.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 

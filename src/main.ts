@@ -18,7 +18,7 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('/api');
   await app.listen(port, '0.0.0.0', () => {
-    console.log(`Server is running on http://10.2.20.32:${port}`);
+    console.log(`http://localhost:${port}/api`);
   });
 }
 bootstrap();

@@ -14,7 +14,6 @@ import { GetCustomerParamsDto } from './dto/get-customer.dto';
 import { Role } from 'src/common/enum/role.enum';
 import { Order, OrderDocument } from 'src/schemas/orders.schema';
 import { CreateUserEntityDto } from './dto/create-user-entity';
-import { UserEntity } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileUploadService } from 'src/common/service/file-upload.service';

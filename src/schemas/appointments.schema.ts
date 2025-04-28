@@ -3,42 +3,36 @@ import { HydratedDocument, Types } from 'mongoose';
 
 export type AppointmentDocument = HydratedDocument<Appointment>;
 
-export enum AppointmentStatus {
-  Pending = 'pending',
-  Confirmed = 'confirmed',
-  Done = 'done',
-  Cancelled = 'cancelled',
-}
-
 @Schema({ timestamps: true })
 export class Appointment {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   customerId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Branch', required: true })
-  branchId: Types.ObjectId;
-
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   stylistId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: false })
-  receptionistId?: Types.ObjectId;
+  @Prop({ required: true })
+  date: Date;
+
+  @Prop({ required: true })
+  startTime: string;
+
+  @Prop({ required: true })
+  endTime: string;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Service' }], required: true })
-  serviceIds: Types.ObjectId[];
+  services: Types.ObjectId[];
 
-  @Prop({ required: true })
-  appointmentTime: Date;
-
-  // Tổng thời gian thực hiện các dịch vụ (đơn vị: giờ)
-  @Prop({ required: true })
-  totalDuration: number;
-
-  @Prop({ enum: AppointmentStatus, default: AppointmentStatus.Pending })
-  status: AppointmentStatus;
-
-  @Prop()
+  @Prop({ type: String, required: false })
   notes?: string;
+
+  @Prop({
+    type: String,
+    enum: ['pending', 'confirmed', 'completed', 'cancelled'],
+    default: 'pending',
+  })
+  status: string;
 }
 
 export const AppointmentSchema = SchemaFactory.createForClass(Appointment);
+AppointmentSchema.set('collection', 'appointments');

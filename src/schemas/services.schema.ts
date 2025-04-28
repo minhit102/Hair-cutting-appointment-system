@@ -28,3 +28,4 @@ export class Service {
 }
 
 export const ServiceSchema = SchemaFactory.createForClass(Service);
+ServiceSchema.set('collection', 'services');

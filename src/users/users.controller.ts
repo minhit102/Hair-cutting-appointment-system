@@ -36,13 +36,6 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.Customer)
-  @Get(':id')
-  async getCustomerDetail(@Param('id') id: string) {
-    return this.usersService.getCustomerDetail(id);
-  }
-
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Customer)
   @Get('profile')
   getProfile(@Request() req) {
     return this.usersService.getProfileUser(req.user.id);

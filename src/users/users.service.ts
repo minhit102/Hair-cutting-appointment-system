@@ -8,21 +8,15 @@ import { ResponseDto } from 'src/common/dto/response.dto';
 import { HttpStatus } from 'src/common/constants/http-status.enum';
 import { HttpMessage } from 'src/common/constants/http-message.enum';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateUserDto } from './dto/create-user.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { GetCustomerParamsDto } from './dto/get-customer.dto';
 import { Role } from 'src/common/enum/role.enum';
-import { Order, OrderDocument } from 'src/schemas/orders.schema';
-import { CreateUserEntityDto } from './dto/create-user-entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { FileUploadService } from 'src/common/service/file-upload.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     // @InjectRepository(UserEntity)
     // private usersRepository: Repository<UserEntity>,
     private authService: AuthService,
@@ -192,26 +186,6 @@ export class UsersService {
     const customerSummary = await this.userModel.aggregate(pipeline);
     return new ResponseDto(HttpStatus.OK, HttpMessage.OK, customerSummary);
   }
-  async getCustomerDetail(id: string): Promise<ResponseDto<any>> {
-    const findCustomer = await this.userModel.findById(id).select('-password');
-    if (!findCustomer) {
-      throw new BadRequestException('Customer does not exist');
-    }
-    const orders = await this.orderModel.find({ customerId: id });
-    let productStats = [];
-    for (const order of orders) {
-      productStats = productStats.concat(order.items);
-    }
-    const data = {
-      customerInfor: findCustomer,
-      orderCount: orders.length,
-      wishlistCount: productStats.length,
-      orders: orders,
-      wishlist: productStats,
-    };
-    return new ResponseDto(HttpStatus.OK, HttpMessage.OK, data);
-  }
-
   // async creatUser(createUserEntityDto: CreateUserEntityDto) {
   //   console.log(createUserEntityDto);
   //   const user = await this.usersRepository.create(createUserEntityDto);

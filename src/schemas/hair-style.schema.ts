@@ -22,3 +22,4 @@ export class Hairstyle {
 }
 
 export const HairstyleSchema = SchemaFactory.createForClass(Hairstyle);
+HairstyleSchema.set('collection', 'hairstyles');

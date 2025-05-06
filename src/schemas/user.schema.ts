@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { Role } from 'src/common/enum/role.enum';
 
 export type UserDocument = HydratedDocument<User>;
@@ -21,11 +21,25 @@ export class User {
   @Prop({ required: false })
   address: string;
 
-  @Prop({ required: false })
+  @Prop({
+    required: false,
+    default:
+      'https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/457/avatar-mac-dinh-1.jpg',
+  })
   imgAvt: string;
 
   @Prop({ required: true, enum: Role, type: String, default: Role.Customer })
   role: Role;
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: 'Branch',
+    required: function () {
+      return this.role === Role.HairStylist || this.role === Role.Admin;
+    },
+    default: null,
+  })
+  branch: Types.ObjectId;
 
   @Prop({ required: false, default: false })
   isDeleted: Boolean;

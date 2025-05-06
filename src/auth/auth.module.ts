@@ -6,7 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/schemas/user.schema';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/common/strategies/jwt.strategy';
-import { OtpService } from '../otp/otp.service';
+import { OtpService } from '../modules/otp/otp.service';
 import { Otp, OtpSchema } from '../schemas/otp.schema';
 import { BullModule } from '@nestjs/bull';
 import { OtpProcessor } from 'src/common/otp.process';

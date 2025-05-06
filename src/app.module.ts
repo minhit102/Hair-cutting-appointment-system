@@ -7,9 +7,9 @@ import { MailModule } from './mail/mail.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { MessageModule } from './message/message.module';
 import { NotificationModule } from './notification/notification.module';
-import { TransactionModule } from './transactions/transaction.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { BranchModule } from './modules/branch/branch.module';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { AppService } from './app.service';
     FileUploadModule,
     MessageModule,
     NotificationModule,
-    TransactionModule,
+    BranchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

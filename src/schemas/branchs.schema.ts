@@ -1,28 +1,36 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
 export type BranchDocument = HydratedDocument<Branch>;
 
+// Tạo schema con cho location
+@Schema({ _id: false })
+class GeoLocation {
+  @Prop({ type: String, enum: ['Point'], required: true })
+  type: 'Point';
+
+  @Prop({ type: [Number], required: true }) // [longitude, latitude]
+  coordinates: [number, number];
+}
+
+export const GeoLocationSchema = SchemaFactory.createForClass(GeoLocation);
+
 @Schema({ timestamps: true })
 export class Branch {
-  //   @Prop({ required: true, unique: true })
-  //   branchId: string;
-
   @Prop({ required: true })
   name: string;
 
   @Prop({
-    required: false,
     type: {
-      street: { type: String },
-      ward: { type: String },
-      district: { type: String },
-      city: { type: String },
-      country: { type: String },
+      street: String,
+      ward: String,
+      district: String,
+      city: String,
+      country: String,
     },
     _id: false,
   })
-  address: {
+  address?: {
     street?: string;
     ward?: string;
     district?: string;
@@ -30,21 +38,14 @@ export class Branch {
     country?: string;
   };
 
-  @Prop({
-    required: false,
-    type: {
-      type: { type: String, enum: ['Point'], default: 'Point' },
-      coordinates: { type: [Number], index: '2dsphere' },
-    },
-    _id: false,
-  })
-  location?: {
-    type: 'Point';
-    coordinates: [number, number];
-  };
+  @Prop({ type: GeoLocationSchema, required: true })
+  location: GeoLocation;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
-  managers: Types.ObjectId[];
+  @Prop({
+    default:
+      'https://xuongmocgocongnghiep.com/upload/images/kinh-nghiem-mo-tiem-cat-toc-nam-3(1).jpg',
+  })
+  imgSalon: string;
 
   @Prop({ default: true })
   isActive: boolean;
@@ -52,3 +53,4 @@ export class Branch {
 
 export const BranchSchema = SchemaFactory.createForClass(Branch);
 BranchSchema.set('collection', 'branches');
+BranchSchema.index({ location: '2dsphere' });

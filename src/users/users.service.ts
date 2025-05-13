@@ -214,4 +214,8 @@ export class UsersService {
       { new: true },
     );
   }
+
+  test(file: Express.Multer.File) {
+    return this.fileUploadService.uploadImage(file);
+  }
 }

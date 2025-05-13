@@ -1,7 +1,7 @@
 import { Processor, Process } from '@nestjs/bull';
 import { Job } from 'bull';
 import { OTP_QUEUE, SENT_OTP } from 'src/common/constants/queue.constant';
-import { OtpService } from 'src/modules/otp/otp.service';
+import { OtpService } from 'src/otp/otp.service';
 
 @Processor(OTP_QUEUE)
 export class OtpProcessor {

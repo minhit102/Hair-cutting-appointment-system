@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { randomInt } from 'crypto';
-import { Otp, OtpDocument } from '../schemas/otp.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { MailService } from 'src/mail/mail.service';
 import { SENT_OTP } from 'src/common/constants/queue.constant';
+import { Otp, OtpDocument } from 'src/schemas/otp.schema';
 
 @Injectable()
 export class OtpService {

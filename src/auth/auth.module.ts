@@ -6,13 +6,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/schemas/user.schema';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/common/strategies/jwt.strategy';
-import { OtpService } from '../modules/otp/otp.service';
 import { Otp, OtpSchema } from '../schemas/otp.schema';
 import { BullModule } from '@nestjs/bull';
 import { OtpProcessor } from 'src/common/otp.process';
 import { MailModule } from 'src/mail/mail.module';
 import { PasswordService } from '../common/password.service';
 import { OTP_QUEUE } from 'src/common/constants/queue.constant';
+import { OtpService } from 'src/otp/otp.service';
 @Module({
   imports: [
     BullModule.forRoot({

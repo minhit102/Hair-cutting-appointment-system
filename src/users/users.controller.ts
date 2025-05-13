@@ -59,29 +59,13 @@ export class UsersController {
   // @Roles(Role.Admin)
   // @Post()
   // updateImageAvt(@Body() createUserDto: CreateUserDto) {
-  //   return this.usersService.addUser(createUserDto);
-  // }
-
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  @Put(':id')
+  @Post('test')
   @UseInterceptors(
     FileInterceptor('image', {
       limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
     }),
   )
-  async updateAvt(@UploadedFile() file: Express.Multer.File, @GetUser() user) {
-    return this.usersService.updateAvt({ userId: user.id, file }); // hoặc truyền trực tiếp nếu service không cần array
+  async test(@UploadedFile() file: Express.Multer.File) {
+    return this.usersService.test(file);
   }
-
-  // @Post('createUser')
-  // creatUser(@Body() createUserEntityDto: CreateUserEntityDto) {
-  //   return this.usersService.creatUser(createUserEntityDto);
-  // }
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.Admin, Role.Customer)
-  // @Get(':id')
-  // async getUserById(@Param('id') id: string) {
-  //   return this.usersService.getProfileUser(id);
-  // }
 }

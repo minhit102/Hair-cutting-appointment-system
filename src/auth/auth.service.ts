@@ -11,7 +11,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { OtpService } from '../modules/otp/otp.service';
+import { OtpService } from 'src/otp/otp.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';

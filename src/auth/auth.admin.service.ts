@@ -20,67 +20,67 @@ import { PasswordService } from '../common/password.service';
 import { ResponseDto } from 'src/common/dto/response.dto';
 import { HttpMessage } from 'src/common/constants/http-message.enum';
 import { HttpStatus } from 'src/common/constants/http-status.enum';
-import { LoginRequestDto } from './dto/login-request.dto';
-import { VerifySignatureDto } from './dto/verify-signature.dto';
 import { Redis } from 'ioredis';
-import { randomBytes } from 'crypto';
 import Web3 from 'web3';
 import { ApiError } from 'src/common/errors/api.error';
+import { Admin, AdminDocument } from 'src/schemas/admin.schema';
+import { CreateAdminDto } from './dto/createAdmin.dto';
+import { Branch, BranchDocument } from 'src/schemas/branchs.schema';
 
 @Injectable()
-export class AuthService {
-  private redisClient: Redis;
-  private web3: Web3;
+export class AuthAdminService {
   constructor(
     private jwtService: JwtService,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Branch.name) private branchModel: Model<BranchDocument>,
     @InjectModel(Otp.name) private otpModel: Model<OtpDocument>,
     private otpService: OtpService,
     private passwordService: PasswordService,
+    @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
   ) {}
 
-  async register(registerUserDto: RegisterUserDto): Promise<any> {
-    const { email, password, username } = registerUserDto;
-    const existUser = await this.userModel.findOne({
+  async register(createAdmin: CreateAdminDto) {
+    const { email, password, username, branchId } = createAdmin;
+    const existUser = await this.adminModel.findOne({
       email: email,
+    });
+    const existBranch = await this.branchModel.findOne({
+      _id: branchId,
     });
     if (existUser) {
       throw new ApiError('E100', 'User already exists');
     }
     const hashPassword = await this.passwordService.hashPassword(password);
 
-    const newUser = await this.userModel.create({
+    const newUser = await this.adminModel.create({
       username: username,
       email: email,
       password: hashPassword,
+      branchId: branchId,
     });
     return new ResponseDto(HttpStatus.OK, HttpMessage.OK);
   }
 
   async login(signInDto: SignInDto) {
-    const user = await this.userModel.findOne({ email: signInDto.email });
-    if (!user) {
+    const admin = await this.adminModel.findOne({ email: signInDto.email });
+    if (!admin) {
       throw new UnauthorizedException('Invalid credentials');
     }
     const isMatch = await this.passwordService.comparePassword(
       signInDto.password,
-      user.password,
+      admin.password,
     );
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
     const payload = {
-      id: user._id,
-      email: user.email,
-      role: user.role,
+      id: admin._id,
+      email: admin.email,
     };
     const data = {
-      id: user._id,
-      email: user.email,
-      role: user.role,
+      id: admin._id,
+      email: admin.email,
       accessToken: this.jwtService.sign(payload),
-      username: user.username,
-      imgAvt: user.imgAvt,
     };
     return new ResponseDto(HttpStatus.OK, HttpMessage.OK, data);
   }

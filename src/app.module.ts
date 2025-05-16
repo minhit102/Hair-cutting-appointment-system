@@ -10,6 +10,8 @@ import { NotificationModule } from './notification/notification.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BranchModule } from './branch/branch.module';
+import { ServiceModule } from './service/service.module';
+import { HairStylistModule } from './hair-stylist/hair-stylist.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { BranchModule } from './branch/branch.module';
     MessageModule,
     NotificationModule,
     BranchModule,
+    ServiceModule,
+    HairStylistModule,
   ],
   controllers: [AppController],
   providers: [AppService],

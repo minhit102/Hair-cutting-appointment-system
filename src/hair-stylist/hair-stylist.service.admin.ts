@@ -1,0 +1,79 @@
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  HairStylist,
+  HairStylistDocument,
+} from 'src/schemas/hair-stylist.schemas';
+import { Model } from 'mongoose';
+import { Branch, BranchDocument } from 'src/schemas/branchs.schema';
+import { Admin } from 'src/common/decorator/admin.decorator';
+import { AdminDocument } from 'src/schemas/admin.schema';
+import { CreateHairStylistDto } from './dto/create-hair-stylist.dto';
+import { PasswordService } from 'src/common/password.service';
+
+@Injectable()
+export class HairStylistAdminService {
+  constructor(
+    @InjectModel(HairStylist.name)
+    private hairStylistModel: Model<HairStylistDocument>,
+    @InjectModel(Branch.name)
+    private branchModel: Model<BranchDocument>,
+    @InjectModel(Admin.name)
+    private adminModel: Model<AdminDocument>,
+    private readonly passwordService: PasswordService,
+  ) {}
+  async findAllByBranchId({ id, user }) {
+    const checkBranch = await this.branchModel.findById(id);
+    const admin = await this.adminModel.findById(user.id);
+    if (!checkBranch) {
+      throw new NotFoundException('Branch not found');
+    }
+
+    if (admin.branchId.toString() !== checkBranch._id.toString()) {
+      throw new UnauthorizedException(
+        'You are not authorized to access this branch',
+      );
+    }
+    const hairStylist = await this.hairStylistModel.find({
+      branchId: id,
+    });
+    return hairStylist;
+  }
+
+  async create(createHairStylistDto: CreateHairStylistDto, user: any) {
+    const checkBranch = await this.branchModel.findById(
+      createHairStylistDto.branchId,
+    );
+    const checkEmail = await this.hairStylistModel.findOne({
+      email: createHairStylistDto.email,
+    });
+
+    const adminBranch = await this.adminModel.findById(user.id);
+
+    if (checkEmail) {
+      throw new BadRequestException('Email already exists');
+    }
+    if (!checkBranch) {
+      throw new NotFoundException('Branch not found');
+    }
+
+    if (adminBranch.branchId.toString() !== checkBranch._id.toString()) {
+      throw new UnauthorizedException(
+        'You are not authorized to access this branch',
+      );
+    }
+    const hashPassword = await this.passwordService.hashPassword(
+      createHairStylistDto.password,
+    );
+    const hairStylist = await this.hairStylistModel.create({
+      ...createHairStylistDto,
+      password: hashPassword,
+    });
+    return hairStylist;
+  }
+}

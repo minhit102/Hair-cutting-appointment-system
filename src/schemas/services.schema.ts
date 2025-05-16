@@ -15,7 +15,7 @@ export class Service {
   price: number;
 
   @Prop({ required: true })
-  duration: number; // đơn vị: giờ
+  duration: number; // đơn vị: phút
 
   @Prop({ required: false })
   image: string;

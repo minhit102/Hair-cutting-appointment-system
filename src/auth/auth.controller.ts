@@ -29,15 +29,4 @@ export class AuthController {
   resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
   }
-
-  @Post('request-nonce')
-  async requestNonce(@Body() loginRequestDto: LoginRequestDto) {
-    const response = await this.authService.generateNonce(loginRequestDto);
-    return new ResponseDto(HttpStatus.OK, HttpMessage.OK, response);
-  }
-
-  @Post('verify-account')
-  async verifySignature(@Body() verifySignatureDto: VerifySignatureDto) {
-    return this.authService.verifySignature(verifySignatureDto);
-  }
 }

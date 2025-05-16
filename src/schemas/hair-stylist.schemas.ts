@@ -2,10 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Role } from 'src/common/enum/role.enum';
 
-export type UserDocument = HydratedDocument<User>;
+export type HairStylistDocument = HydratedDocument<HairStylist>;
 
 @Schema({ timestamps: true })
-export class User {
+export class HairStylist {
   @Prop({ required: true })
   username: string;
 
@@ -28,12 +28,23 @@ export class User {
   })
   imgAvt: string;
 
-  @Prop({ required: true, enum: Role, type: String, default: Role.Customer })
-  role: Role;
+  @Prop({
+    required: false,
+    default:
+      'https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/457/avatar-mac-dinh-1.jpg',
+  })
+  imgBackground: string;
+
+  @Prop({ required: false, default: false })
+  @Prop({ required: false, default: 0 })
+  salaryBase: number;
+
+  @Prop({ type: Types.ObjectId, ref: 'Branch' })
+  branchId: Types.ObjectId;
 
   @Prop({ required: false, default: false })
   isDeleted: Boolean;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
-UserSchema.set('collection', 'users');
+export const HairStylistSchema = SchemaFactory.createForClass(HairStylist);
+HairStylistSchema.set('collection', 'hair-stylists');

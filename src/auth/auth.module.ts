@@ -13,6 +13,10 @@ import { MailModule } from 'src/mail/mail.module';
 import { PasswordService } from '../common/password.service';
 import { OTP_QUEUE } from 'src/common/constants/queue.constant';
 import { OtpService } from 'src/otp/otp.service';
+import { Admin, AdminSchema } from 'src/schemas/admin.schema';
+import { Branch, BranchSchema } from 'src/schemas/branchs.schema';
+import { AuthAdminController } from './auth.admin.controller';
+import { AuthAdminService } from './auth.admin.service';
 @Module({
   imports: [
     BullModule.forRoot({
@@ -33,6 +37,14 @@ import { OtpService } from 'src/otp/otp.service';
         name: Otp.name,
         schema: OtpSchema,
       },
+      {
+        name: Admin.name,
+        schema: AdminSchema,
+      },
+      {
+        name: Branch.name,
+        schema: BranchSchema,
+      },
     ]),
     JwtModule.registerAsync({
       useFactory: async () => ({
@@ -49,8 +61,9 @@ import { OtpService } from 'src/otp/otp.service';
     OtpService,
     OtpProcessor,
     PasswordService,
+    AuthAdminService,
   ],
-  controllers: [AuthController],
-  exports: [AuthService, JwtModule],
+  controllers: [AuthController, AuthAdminController],
+  exports: [AuthService, JwtModule, AuthAdminService],
 })
 export class AuthModule {}

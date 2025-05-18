@@ -14,9 +14,6 @@ export class Service {
   @Prop({ required: true })
   price: number;
 
-  @Prop({ required: true })
-  duration: number; // đơn vị: phút
-
   @Prop({ required: false })
   image: string;
 

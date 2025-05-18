@@ -15,34 +15,20 @@ import { RolesGuard } from 'src/common/strategies/roles.guard';
 import { Roles } from 'src/common/roles.decorator';
 import { Role } from 'src/common/enum/role.enum';
 import { BranchAdminService } from './branch.service.admin';
+import { User } from 'src/common/decorator/user.decorator';
 
-@Controller('branches')
+@Controller('admin/branches')
 export class BranchAdminController {
   constructor(private readonly branchAdminService: BranchAdminService) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.SuperAdmin)
-  @Post()
-  create(@Body() createBranchDto: CreateBranchDto) {
-    return this.branchAdminService.create(createBranchDto);
-  }
   @Get()
   findAll() {
     return this.branchAdminService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.branchAdminService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBranchDto: UpdateBranchDto) {
-    return this.branchAdminService.update(id, updateBranchDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.branchAdminService.remove(id);
+  @Get('/dashboard')
+  @UseGuards(JwtAuthGuard)
+  getBranchList(@User() user: any) {
+    return this.branchAdminService.getDashboardBranch(user);
   }
 }

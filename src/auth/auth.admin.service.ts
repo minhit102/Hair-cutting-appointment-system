@@ -77,10 +77,16 @@ export class AuthAdminService {
       id: admin._id,
       email: admin.email,
     };
+
+    const branch = await this.branchModel.findOne({ _id: admin.branchId });
+
     const data = {
       id: admin._id,
       email: admin.email,
+      username: admin.username,
       accessToken: this.jwtService.sign(payload),
+      branchId: admin.branchId,
+      branchName: branch.name,
     };
     return new ResponseDto(HttpStatus.OK, HttpMessage.OK, data);
   }

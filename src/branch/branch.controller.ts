@@ -16,7 +16,7 @@ import { RolesGuard } from 'src/common/strategies/roles.guard';
 import { Roles } from 'src/common/roles.decorator';
 import { Role } from 'src/common/enum/role.enum';
 
-@Controller('branches')
+@Controller('branchs')
 export class BranchController {
   constructor(private readonly branchService: BranchService) {}
 

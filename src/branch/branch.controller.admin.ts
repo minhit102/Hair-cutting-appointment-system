@@ -17,7 +17,7 @@ import { Role } from 'src/common/enum/role.enum';
 import { BranchAdminService } from './branch.service.admin';
 import { User } from 'src/common/decorator/user.decorator';
 
-@Controller('admin/branches')
+@Controller('admin/branchs')
 export class BranchAdminController {
   constructor(private readonly branchAdminService: BranchAdminService) {}
 

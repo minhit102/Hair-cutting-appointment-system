@@ -37,7 +37,6 @@ export class BranchAdminService {
   async remove(id: string): Promise<Branch> {
     return this.branchModel.findByIdAndDelete(id).exec();
   }
-
   async getDashboardBranch(user: any) {
     const userInfo = await this.adminModel.findOne({ _id: user.id });
     const branch = await this.branchModel.findOne({ _id: userInfo.branchId });

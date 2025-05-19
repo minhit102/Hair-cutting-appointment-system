@@ -12,6 +12,7 @@ import { AppService } from './app.service';
 import { BranchModule } from './branch/branch.module';
 import { ServiceModule } from './service/service.module';
 import { HairStylistModule } from './hair-stylist/hair-stylist.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { HairStylistModule } from './hair-stylist/hair-stylist.module';
     BranchModule,
     ServiceModule,
     HairStylistModule,
+    AppointmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

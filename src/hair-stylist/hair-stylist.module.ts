@@ -12,6 +12,9 @@ import { HairStylistAdminService } from './hair-stylist.service.admin';
 import { Admin } from 'src/common/decorator/admin.decorator';
 import { AdminSchema } from 'src/schemas/admin.schema';
 import { PasswordService } from 'src/common/password.service';
+import { Invoice, InvoiceSchema } from 'src/schemas/invoices.schema';
+import { Review, ReviewSchema } from 'src/schemas/reviews.schemas';
+import { Service, ServiceSchema } from 'src/schemas/services.schema';
 
 @Module({
   imports: [
@@ -19,6 +22,9 @@ import { PasswordService } from 'src/common/password.service';
       { name: HairStylist.name, schema: HairStylistSchema },
       { name: Branch.name, schema: BranchSchema },
       { name: Admin.name, schema: AdminSchema },
+      { name: Invoice.name, schema: InvoiceSchema },
+      { name: Review.name, schema: ReviewSchema },
+      { name: Service.name, schema: ServiceSchema },
     ]),
   ],
   controllers: [HairStylistController, HairStylistAdminController],

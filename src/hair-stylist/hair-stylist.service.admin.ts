@@ -15,6 +15,9 @@ import { Admin } from 'src/common/decorator/admin.decorator';
 import { AdminDocument } from 'src/schemas/admin.schema';
 import { CreateHairStylistDto } from './dto/create-hair-stylist.dto';
 import { PasswordService } from 'src/common/password.service';
+import { GetHairStyleListDto } from './dto/getHairStyleList.dto';
+import { Invoice, InvoiceDocument } from 'src/schemas/invoices.schema';
+import { Review, ReviewDocument } from 'src/schemas/reviews.schemas';
 
 @Injectable()
 export class HairStylistAdminService {
@@ -26,6 +29,10 @@ export class HairStylistAdminService {
     @InjectModel(Admin.name)
     private adminModel: Model<AdminDocument>,
     private readonly passwordService: PasswordService,
+    @InjectModel(Invoice.name)
+    private invoiceModel: Model<InvoiceDocument>,
+    @InjectModel(Review.name)
+    private reviewModel: Model<ReviewDocument>,
   ) {}
   async findAllByBranchId({ id, user }) {
     const checkBranch = await this.branchModel.findById(id);
@@ -75,5 +82,145 @@ export class HairStylistAdminService {
       password: hashPassword,
     });
     return hairStylist;
+  }
+
+  async findAllByAdminId({
+    id,
+    query,
+  }: {
+    id: string;
+    query: GetHairStyleListDto;
+  }) {
+    const admin = await this.adminModel.findById(id);
+    if (!admin) {
+      throw new NotFoundException('Admin not found');
+    }
+    const { page, limit, status, search } = query;
+    const skip = (page - 1) * limit;
+
+    const queryBuilder = this.hairStylistModel.find();
+    queryBuilder.where('branchId', admin.branchId);
+    queryBuilder.where('isDeleted', { $ne: true });
+
+    if (status !== 'all') {
+      queryBuilder.where('status', status);
+    }
+    if (search) {
+      queryBuilder.or([{ username: { $regex: search, $options: 'i' } }]);
+    }
+
+    const [total, hairStylist] = await Promise.all([
+      this.hairStylistModel.countDocuments(queryBuilder.getQuery()),
+      queryBuilder
+        .populate({
+          path: 'branchId',
+          select: 'name',
+        })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+    const hairStylistConvert = await Promise.all(
+      hairStylist.map(async (item) => {
+        const invoiceCount = await this.invoiceModel.countDocuments({
+          hairStylistId: item._id,
+        });
+
+        return {
+          id: item._id,
+          username: item.username,
+          email: item.email,
+          status: item.status,
+          baseSalary: item.salaryBase,
+          imgAvt: item.imgAvt,
+          phone: item.phone,
+          invoiceCount,
+        };
+      }),
+    );
+
+    return {
+      hairStylists: hairStylistConvert,
+      total,
+      totalPages,
+      page,
+      limit,
+    };
+  }
+
+  async getStylistDetailById({ id }: { id: string }): Promise<any> {
+    const hairStylist = await this.hairStylistModel.findById(id);
+    if (!hairStylist) {
+      throw new NotFoundException('Hair stylist not found');
+    }
+
+    const invoiceCount = await this.invoiceModel.countDocuments({
+      hairStylistId: hairStylist._id,
+    });
+
+    const review = await this.reviewModel.find({
+      hairStylistId: hairStylist._id,
+    });
+
+    const reviewCount = await this.reviewModel.countDocuments({
+      hairStylistId: hairStylist._id,
+    });
+
+    const reviewRatingTotal = review.reduce(
+      (acc, item) => acc + item.rating,
+      0,
+    );
+    const reviewRatingAverage =
+      reviewCount > 0 ? reviewRatingTotal / reviewCount : 0;
+
+    const now = new Date();
+    const firstDayOfLastMonth = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      1,
+    );
+    const lastDayOfLastMonth = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      0,
+      23,
+      59,
+      59,
+      999,
+    );
+
+    const totalInvoiceMonthBefore = await this.invoiceModel.countDocuments({
+      hairStylistId: hairStylist._id,
+      createdAt: {
+        $gte: firstDayOfLastMonth,
+        $lte: lastDayOfLastMonth,
+      },
+    });
+
+    const salaryMonthBefore =
+      hairStylist.salaryBase + totalInvoiceMonthBefore * 0.3;
+
+    return {
+      id: hairStylist._id,
+      name: hairStylist.username,
+      email: hairStylist.email,
+      phone: hairStylist.phone,
+      avatar: hairStylist.imgAvt,
+      status: hairStylist.status,
+      baseSalary: hairStylist.salaryBase,
+      rating: reviewRatingAverage,
+      totalInvoiceMonthBefore,
+      salaryMonthBefore,
+      invoiceCount,
+      service: 5,
+      joinDate: (hairStylist as any).createdAt,
+      review: {
+        reviewCount,
+        reviewRatingAverage,
+        reviewList: review,
+      },
+    };
   }
 }

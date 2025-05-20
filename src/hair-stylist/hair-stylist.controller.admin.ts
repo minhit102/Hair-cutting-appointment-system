@@ -13,6 +13,7 @@ import { RolesGuard } from 'src/common/strategies/roles.guard';
 import { User } from 'src/common/decorator/user.decorator';
 import { HairStylistAdminService } from './hair-stylist.service.admin';
 import { CreateHairStylistDto } from './dto/create-hair-stylist.dto';
+import { GetHairStyleListDto } from './dto/getHairStyleList.dto';
 
 @Controller('admin/hair-stylist')
 export class HairStylistAdminController {
@@ -29,16 +30,18 @@ export class HairStylistAdminController {
   }
 
   @Get()
-  tess() {
-    return 'test';
+  @UseGuards(JwtAuthGuard)
+  getStylistByBranchId(@User() user: any, @Query() query: GetHairStyleListDto) {
+    return this.hairStylistAdminService.findAllByAdminId({
+      id: user.id,
+      query,
+    });
   }
 
-  @Post()
-  @UseGuards(JwtAuthGuard)
-  create(
-    @User() user: any,
-    @Body() createHairStylistDto: CreateHairStylistDto,
-  ) {
-    return this.hairStylistAdminService.create(createHairStylistDto, user);
+  @Get(':id/detail')
+  getStylistDetail(@Param('id') id: string): Promise<any> {
+    return this.hairStylistAdminService.getStylistDetailById({
+      id,
+    });
   }
 }

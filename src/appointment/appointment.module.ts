@@ -13,6 +13,10 @@ import {
   HairStylist,
   HairStylistSchema,
 } from 'src/schemas/hair-stylist.schemas';
+import { AppointmentAdminController } from './appointment.controller.admin';
+import { AppointmentAdminService } from './appointment.service.admin';
+import { Admin } from 'src/common/decorator/admin.decorator';
+import { AdminSchema } from 'src/schemas/admin.schema';
 
 @Module({
   imports: [
@@ -22,10 +26,11 @@ import {
       { name: Branch.name, schema: BranchSchema },
       { name: Service.name, schema: ServiceSchema },
       { name: HairStylist.name, schema: HairStylistSchema },
+      { name: Admin.name, schema: AdminSchema },
     ]),
   ],
-  controllers: [AppointmentController],
-  providers: [AppointmentService],
-  exports: [AppointmentService],
+  controllers: [AppointmentController, AppointmentAdminController],
+  providers: [AppointmentService, AppointmentAdminService],
+  exports: [AppointmentService, AppointmentAdminService],
 })
 export class AppointmentModule {}

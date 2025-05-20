@@ -4,6 +4,11 @@ import { Role } from 'src/common/enum/role.enum';
 
 export type HairStylistDocument = HydratedDocument<HairStylist>;
 
+export enum HairStylistStatus {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}
+
 @Schema({ timestamps: true })
 export class HairStylist {
   @Prop({ required: true })
@@ -36,14 +41,16 @@ export class HairStylist {
   imgBackground: string;
 
   @Prop({ required: false, default: false })
+  isDeleted: Boolean;
+
   @Prop({ required: false, default: 0 })
   salaryBase: number;
 
   @Prop({ type: Types.ObjectId, ref: 'Branch' })
   branchId: Types.ObjectId;
 
-  @Prop({ required: false, default: false })
-  isDeleted: Boolean;
+  @Prop({ required: false, default: HairStylistStatus.ACTIVE })
+  status: HairStylistStatus;
 }
 
 export const HairStylistSchema = SchemaFactory.createForClass(HairStylist);

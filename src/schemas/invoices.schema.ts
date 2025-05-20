@@ -13,7 +13,7 @@ export class Invoice {
   branchId: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'Stylist', required: true })
-  stylistId: Types.ObjectId;
+  hairStylistId: Types.ObjectId;
 
   @Prop({ type: String, required: false })
   phone?: string;
@@ -31,5 +31,5 @@ export class Invoice {
   services: Types.ObjectId[];
 }
 
-export const AppointmentSchema = SchemaFactory.createForClass(Appointment);
-AppointmentSchema.set('collection', 'appointments');
+export const InvoiceSchema = SchemaFactory.createForClass(Invoice);
+InvoiceSchema.set('collection', 'invoices');

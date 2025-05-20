@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import {
@@ -85,11 +85,30 @@ export class AppointmentService {
     return new ResponseDto(HttpStatus.OK, HttpMessage.OK, newAppointment);
   }
 
-  async findAll({ user }: { user: any }) {
-    const appointments = await this.appointmentModel.find({
-      customerId: user.id,
+  async findAll(user) {
+    const appointments = await this.appointmentModel
+      .find({
+        customerId: new Types.ObjectId(user.id),
+      })
+      .populate({
+        path: 'serviceId',
+        select: 'name', // chỉ lấy trường 'name' từ Service
+      })
+      .populate({
+        path: 'branchId',
+        select: 'name', // chỉ lấy trường 'name' từ Branch
+      });
+
+    const convertAppointments = appointments.map((appointment) => {
+      const plain = appointment.toObject(); // ✅ chuyển document thành object thường
+      return {
+        ...plain,
+        branch: plain.branchId?.['name'],
+        service: plain.serviceId?.['name'],
+      };
     });
-    return appointments;
+
+    return convertAppointments;
   }
 
   // async updateAppointmentStatus({id, user}: {id: string, user: any}) {

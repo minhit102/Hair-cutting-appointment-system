@@ -101,7 +101,7 @@ export class InvoicesService {
       return {
         id: invoice._id,
         date: (invoice as any).createdAt,
-        service: invoice.customerId['username'],
+        service: invoice.serviceId['name'],
         stylist: invoice.stylistId['username'],
         stylistId: invoice.stylistId['_id'],
         serviceId: invoice.serviceId['_id'],

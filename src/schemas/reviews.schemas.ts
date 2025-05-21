@@ -11,11 +11,14 @@ export class Review {
   @Prop({ type: Types.ObjectId, ref: 'HairStylist', required: true })
   stylistId: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: 'Invoice', required: true })
+  invoiceId: Types.ObjectId;
+
   @Prop({ required: true, min: 1, max: 5 })
   rating: number;
 
   @Prop({ required: true })
-  comment: string;
+  review: string;
 
   @Prop({ type: [String], default: [] })
   images?: string[];

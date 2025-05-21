@@ -40,7 +40,7 @@ export class AuthService {
   ) {}
 
   async register(registerUserDto: RegisterUserDto): Promise<any> {
-    const { email, password, username } = registerUserDto;
+    const { email, password, username, phone } = registerUserDto;
     const existUser = await this.userModel.findOne({
       email: email,
     });
@@ -53,8 +53,9 @@ export class AuthService {
       username: username,
       email: email,
       password: hashPassword,
+      phone: phone,
     });
-    return new ResponseDto(HttpStatus.OK, HttpMessage.OK);
+    return new ResponseDto(HttpStatus.OK, HttpMessage.OK, newUser);
   }
 
   async login(signInDto: SignInDto) {
@@ -72,12 +73,10 @@ export class AuthService {
     const payload = {
       id: user._id,
       email: user.email,
-      role: user.role,
     };
     const data = {
       id: user._id,
       email: user.email,
-      role: user.role,
       accessToken: this.jwtService.sign(payload),
       username: user.username,
       imgAvt: user.imgAvt,

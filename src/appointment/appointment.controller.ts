@@ -3,11 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
-  Query,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
@@ -18,11 +16,6 @@ import { JwtAuthGuard } from 'src/common/guards/auth.guard';
 @Controller('appointments')
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
-
-  @Get('test')
-  test() {
-    return 'test';
-  }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -37,5 +30,10 @@ export class AppointmentController {
   @UseGuards(JwtAuthGuard)
   findAll(@User() user: any) {
     return this.appointmentService.findAll(user);
+  }
+
+  @Put(':id/cancel')
+  cancel(@Param('id') id: string) {
+    return this.appointmentService.cancel(id);
   }
 }

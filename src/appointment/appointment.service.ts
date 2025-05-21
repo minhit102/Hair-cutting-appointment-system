@@ -146,4 +146,24 @@ export class AppointmentService {
       .findByIdAndUpdate(id, { status }, { new: true })
       .exec();
   }
+
+  async cancel(id: string) {
+    const appointment = await this.appointmentModel.findById(id);
+    if (!appointment) {
+      throw new BadRequestException('Appointment not found');
+    }
+    if (appointment.date <= new Date()) {
+      throw new BadRequestException('Appointment is in the past');
+    }
+    await this.appointmentModel
+      .findByIdAndUpdate(
+        id,
+        { status: AppointmentStatus.CANCELLED },
+        { new: true },
+      )
+      .exec();
+    return new ResponseDto(HttpStatus.OK, HttpMessage.OK, {
+      message: 'Appointment cancelled successfully',
+    });
+  }
 }

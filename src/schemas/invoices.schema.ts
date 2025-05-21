@@ -27,6 +27,9 @@ export class Invoice {
   @Prop({ type: Types.ObjectId, ref: 'Service', required: true })
   serviceId: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: 'Review', required: false })
+  reviewId: Types.ObjectId;
+
   @Prop({ type: Boolean, required: false, default: false })
   isDeleted: boolean;
 }

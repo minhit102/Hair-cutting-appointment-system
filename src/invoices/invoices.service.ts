@@ -96,7 +96,8 @@ export class InvoicesService {
       .populate('customerId')
       .populate('stylistId')
       .populate('serviceId')
-      .populate('branchId');
+      .populate('branchId')
+      .populate('reviewId');
 
     const invoiceConvert = invoices.map((invoice) => {
       return {
@@ -111,6 +112,9 @@ export class InvoicesService {
         branchId: invoice.branchId['_id'],
         branch: invoice.branchId['name'],
         username: invoice.username,
+        reviewId: invoice.reviewId?.['_id'] || null,
+        rating: invoice.reviewId?.['rating'] || null,
+        review: invoice.reviewId?.['review'] || null,
       };
     });
     return invoiceConvert;

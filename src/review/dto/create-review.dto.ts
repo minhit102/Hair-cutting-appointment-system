@@ -1,13 +1,16 @@
-import { IsString, IsNumber, IsNotEmpty, Min, Max } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsNotEmpty,
+  Min,
+  Max,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateReviewDto {
   @IsString()
   @IsNotEmpty()
-  hairStylistId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
+  invoiceId: string;
 
   @IsNumber()
   @Min(1)
@@ -15,6 +18,6 @@ export class CreateReviewDto {
   rating: number;
 
   @IsString()
-  @IsNotEmpty()
-  comment: string;
+  @IsOptional()
+  review: string;
 }

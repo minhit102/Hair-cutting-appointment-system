@@ -14,6 +14,7 @@ import { ServiceModule } from './service/service.module';
 import { HairStylistModule } from './hair-stylist/hair-stylist.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { InvoicesModule } from './invoices/invoices.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { InvoicesModule } from './invoices/invoices.module';
     HairStylistModule,
     AppointmentModule,
     InvoicesModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],

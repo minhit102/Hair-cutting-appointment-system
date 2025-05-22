@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -14,6 +15,7 @@ import { User } from 'src/common/decorator/user.decorator';
 import { HairStylistAdminService } from './hair-stylist.service.admin';
 import { CreateHairStylistDto } from './dto/create-hair-stylist.dto';
 import { GetHairStyleListDto } from './dto/getHairStyleList.dto';
+import { UpdateHairStylistDto } from './dto/update-hair-stylist.dto';
 
 @Controller('admin/hair-stylist')
 export class HairStylistAdminController {
@@ -39,9 +41,19 @@ export class HairStylistAdminController {
   }
 
   @Get(':id/detail')
+  @UseGuards(JwtAuthGuard)
   getStylistDetail(@Param('id') id: string): Promise<any> {
     return this.hairStylistAdminService.getStylistDetailById({
       id,
+    });
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  updateStylist(@Param('id') id: string, @Body() body: UpdateHairStylistDto) {
+    return this.hairStylistAdminService.updateStylist({
+      id,
+      body,
     });
   }
 }

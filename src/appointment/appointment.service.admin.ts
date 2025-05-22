@@ -70,6 +70,7 @@ export class AppointmentAdminService {
           path: 'serviceId',
           select: 'name',
         })
+        .sort({ date: -1 })
         .skip(skip)
         .limit(limit)
         .exec(),
@@ -78,10 +79,11 @@ export class AppointmentAdminService {
     const appointmentResponse = appointments.map((appointment) => {
       return {
         id: appointment._id,
-        username: appointment.customerId['username'],
+        username:
+          appointment.customerId?.['username'] || 'Người dùng đã bị xóa',
         phone: appointment.phone,
         date: appointment.date,
-        service: appointment.serviceId['name'],
+        service: appointment.serviceId?.['name'] || 'Dịch vụ đã bị xóa',
         status: appointment.status,
         notes: appointment.notes,
       };

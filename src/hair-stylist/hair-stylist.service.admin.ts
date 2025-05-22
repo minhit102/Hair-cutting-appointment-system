@@ -18,6 +18,7 @@ import { PasswordService } from 'src/common/password.service';
 import { GetHairStyleListDto } from './dto/getHairStyleList.dto';
 import { Invoice, InvoiceDocument } from 'src/schemas/invoices.schema';
 import { Review, ReviewDocument } from 'src/schemas/reviews.schemas';
+import { UpdateHairStylistDto } from './dto/update-hair-stylist.dto';
 
 @Injectable()
 export class HairStylistAdminService {
@@ -222,5 +223,19 @@ export class HairStylistAdminService {
         reviewList: review,
       },
     };
+  }
+
+  async updateStylist({
+    id,
+    body,
+  }: {
+    id: string;
+    body: UpdateHairStylistDto;
+  }) {
+    const hairStylist = await this.hairStylistModel.findById(id);
+    if (!hairStylist) {
+      throw new NotFoundException('Hair stylist not found');
+    }
+    return this.hairStylistModel.findByIdAndUpdate(id, body, { new: true });
   }
 }

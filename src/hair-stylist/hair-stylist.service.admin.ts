@@ -54,14 +54,14 @@ export class HairStylistAdminService {
   }
 
   async create(createHairStylistDto: CreateHairStylistDto, user: any) {
-    const checkBranch = await this.branchModel.findById(
-      createHairStylistDto.branchId,
-    );
+    const adminBranch = await this.adminModel.findById(user.id);
+    if (!adminBranch) {
+      throw new NotFoundException('Admin not found');
+    }
+    const checkBranch = await this.branchModel.findById(adminBranch.branchId);
     const checkEmail = await this.hairStylistModel.findOne({
       email: createHairStylistDto.email,
     });
-
-    const adminBranch = await this.adminModel.findById(user.id);
 
     if (checkEmail) {
       throw new BadRequestException('Email already exists');
@@ -80,6 +80,7 @@ export class HairStylistAdminService {
     );
     const hairStylist = await this.hairStylistModel.create({
       ...createHairStylistDto,
+      branchId: adminBranch.branchId,
       password: hashPassword,
     });
     return hairStylist;
@@ -106,9 +107,13 @@ export class HairStylistAdminService {
     if (status !== 'all') {
       queryBuilder.where('status', status);
     }
+
+    console.log('==========================', status);
+
     if (search) {
       queryBuilder.or([{ username: { $regex: search, $options: 'i' } }]);
     }
+    queryBuilder.sort({ createdAt: -1 });
 
     const [total, hairStylist] = await Promise.all([
       this.hairStylistModel.countDocuments(queryBuilder.getQuery()),
@@ -134,7 +139,7 @@ export class HairStylistAdminService {
           username: item.username,
           email: item.email,
           status: item.status,
-          baseSalary: item.salaryBase,
+          salaryBase: item.salaryBase,
           imgAvt: item.imgAvt,
           phone: item.phone,
           invoiceCount,
@@ -237,5 +242,9 @@ export class HairStylistAdminService {
       throw new NotFoundException('Hair stylist not found');
     }
     return this.hairStylistModel.findByIdAndUpdate(id, body, { new: true });
+  }
+
+  deleteStylist({ id }: { id: string }) {
+    return this.hairStylistModel.findByIdAndUpdate(id, { isDeleted: true });
   }
 }

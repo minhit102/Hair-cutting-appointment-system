@@ -21,6 +21,9 @@ export class Service {
   isActive: boolean;
 
   @Prop({ default: false })
+  popular: boolean;
+
+  @Prop({ default: false })
   isDeleted: boolean;
 }
 

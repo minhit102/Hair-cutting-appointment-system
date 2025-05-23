@@ -33,8 +33,4 @@ export class CreateHairStylistDto {
 
   @IsOptional()
   salaryBase?: number;
-
-  @IsString()
-  @IsOptional()
-  branchId?: string;
 }

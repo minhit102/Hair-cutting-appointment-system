@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -55,5 +56,22 @@ export class HairStylistAdminController {
       id,
       body,
     });
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  deleteStylist(@Param('id') id: string) {
+    return this.hairStylistAdminService.deleteStylist({
+      id,
+    });
+  }
+
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  createStylist(
+    @Body() createHairStylistDto: CreateHairStylistDto,
+    @User() user: any,
+  ) {
+    return this.hairStylistAdminService.create(createHairStylistDto, user);
   }
 }

@@ -17,6 +17,7 @@ import { AppointmentAdminController } from './appointment.controller.admin';
 import { AppointmentAdminService } from './appointment.service.admin';
 import { Admin } from 'src/common/decorator/admin.decorator';
 import { AdminSchema } from 'src/schemas/admin.schema';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AdminSchema } from 'src/schemas/admin.schema';
       { name: HairStylist.name, schema: HairStylistSchema },
       { name: Admin.name, schema: AdminSchema },
     ]),
+    MailModule,
   ],
   controllers: [AppointmentController, AppointmentAdminController],
   providers: [AppointmentService, AppointmentAdminService],

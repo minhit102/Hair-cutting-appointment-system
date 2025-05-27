@@ -18,6 +18,8 @@ import { Service, ServiceDocument } from 'src/schemas/services.schema';
 import { ResponseDto } from 'src/common/dto/response.dto';
 import { HttpStatus } from 'src/common/constants/http-status.enum';
 import { HttpMessage } from 'src/common/constants/http-message.enum';
+import { MailService } from 'src/mail/mail.service';
+
 @Injectable()
 export class AppointmentService {
   constructor(
@@ -31,6 +33,7 @@ export class AppointmentService {
     private branchModel: Model<BranchDocument>,
     @InjectModel(Service.name)
     private serviceModel: Model<ServiceDocument>,
+    private mailService: MailService,
   ) {}
 
   async create({
@@ -80,6 +83,15 @@ export class AppointmentService {
       date: new Date(date),
       notes,
       username: username ? username : findUser.username,
+    });
+
+    // Gửi email thông báo đặt lịch thành công
+    await this.mailService.sendAppointmentSuccess(findUser.email, {
+      username: newAppointment.username,
+      date: newAppointment.date,
+      service: service.name,
+      branch: branch.name,
+      phone: newAppointment.phone,
     });
 
     return new ResponseDto(HttpStatus.OK, HttpMessage.OK, newAppointment);
@@ -155,7 +167,7 @@ export class AppointmentService {
     if (appointment.date <= new Date()) {
       throw new BadRequestException('Appointment is in the past');
     }
-    await this.appointmentModel
+    const data = await this.appointmentModel
       .findByIdAndUpdate(
         id,
         { status: AppointmentStatus.CANCELLED },

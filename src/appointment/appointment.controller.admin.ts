@@ -1,11 +1,8 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
-  Patch,
   Param,
-  Delete,
   Query,
   UseGuards,
   Put,
@@ -26,6 +23,7 @@ export class AppointmentAdminController {
   @Get()
   @UseGuards(JwtAuthGuard)
   findAll(@User() user: any, @Query() query: GetAppointmentAdminDto) {
+    return 'test';
     return this.appointmentAdminService.findAll(user, query);
   }
 

@@ -16,4 +16,21 @@ export class MailService {
       },
     });
   }
+
+  async sendAppointmentSuccess(email: string, appointmentDetails: any) {
+    await this.mailerService.sendMail({
+      // to: email,
+      to: 'minhit102k66@gmail.com',
+      from: 'minhhoangtrong1002@gmail.com',
+      subject: 'Đặt lịch thành công',
+      template: './appointment-success',
+      context: {
+        username: appointmentDetails.username,
+        date: appointmentDetails.date,
+        service: appointmentDetails.service,
+        branch: appointmentDetails.branch,
+        phone: appointmentDetails.phone,
+      },
+    });
+  }
 }

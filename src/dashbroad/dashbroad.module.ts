@@ -15,6 +15,14 @@ import {
   Appointment,
   AppointmentSchema,
 } from 'src/schemas/appointments.schema';
+import {
+  InvoiceChartDay,
+  InvoiceChartDaySchema,
+} from 'src/schemas/invoice-chart-day';
+import {
+  InvoiceChartMonth,
+  InvoiceChartMonthSchema,
+} from 'src/schemas/invoice-chart-month';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -25,6 +33,8 @@ import {
       { name: User.name, schema: UserSchema },
       { name: Appointment.name, schema: AppointmentSchema },
       { name: Admin.name, schema: AdminSchema },
+      { name: InvoiceChartDay.name, schema: InvoiceChartDaySchema },
+      { name: InvoiceChartMonth.name, schema: InvoiceChartMonthSchema },
     ]),
   ],
   controllers: [DashbroadController],

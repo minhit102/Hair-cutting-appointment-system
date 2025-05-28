@@ -9,10 +9,14 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import axios from 'axios';
+import { TasksService } from './schedule/tasks.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly tasksService: TasksService,
+  ) {}
 
   @Get()
   getHello() {
@@ -36,5 +40,15 @@ export class AppController {
   @Get('order-status/:orderId')
   async getOrderStatus(@Param('orderId') orderId: string) {
     return this.appService.getOrderStatus(orderId);
+  }
+
+  @Get('invoice-chart-day')
+  async getInvoiceChartDay() {
+    return this.tasksService.handleCronDay();
+  }
+
+  @Get('invoice-chart-month')
+  async getInvoiceChartMonth() {
+    return this.tasksService.handleCronMonth();
   }
 }

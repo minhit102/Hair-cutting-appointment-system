@@ -23,7 +23,6 @@ export class AppointmentAdminController {
   @Get()
   @UseGuards(JwtAuthGuard)
   findAll(@User() user: any, @Query() query: GetAppointmentAdminDto) {
-    return 'test';
     return this.appointmentAdminService.findAll(user, query);
   }
 

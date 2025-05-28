@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { Appointment } from './appointments.schema';
 
 export type InvoiceDocument = HydratedDocument<Invoice>;
 
@@ -32,6 +31,12 @@ export class Invoice {
 
   @Prop({ type: Boolean, required: false, default: false })
   isDeleted: boolean;
+
+  @Prop({ type: Date, required: false })
+  createdAt: Date;
+
+  @Prop({ type: Date, required: false })
+  updatedAt: Date;
 }
 
 export const InvoiceSchema = SchemaFactory.createForClass(Invoice);

@@ -15,6 +15,7 @@ import {
 import { Branch, BranchDocument } from 'src/schemas/branchs.schema';
 import { User, UserDocument, UserSchema } from 'src/schemas/user.schema';
 import { Admin, AdminDocument } from 'src/schemas/admin.schema';
+import { GetInvoiceDto } from './dto/get-invoice.dto';
 
 @Injectable()
 export class InvoicesService {
@@ -118,5 +119,65 @@ export class InvoicesService {
       };
     });
     return invoiceConvert;
+  }
+
+  async findAllInvoiceByAdmin({
+    user,
+    getInvoiceDto,
+  }: {
+    user: any;
+    getInvoiceDto: GetInvoiceDto;
+  }) {
+    const findAdmin = await this.adminModel.findById(user.id);
+    if (!findAdmin) {
+      throw new BadRequestException('Admin not found');
+    }
+
+    const { page, limit, search } = getInvoiceDto;
+    const skip = (page - 1) * limit;
+    const queryBuilder = this.invoiceModel.find();
+    queryBuilder.where('branchId', findAdmin.branchId);
+
+    if (search) {
+      queryBuilder.or([
+        { phone: { $regex: search, $options: 'i' } },
+        { username: { $regex: search, $options: 'i' } },
+      ]);
+    }
+
+    const [total, invoices] = await Promise.all([
+      this.invoiceModel.countDocuments(queryBuilder.getQuery()),
+      queryBuilder
+        .populate('stylistId')
+        .populate('serviceId')
+        .populate('reviewId')
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    const invoiceConvert = invoices.map((invoice) => {
+      return {
+        id: invoice._id,
+        name: invoice.username,
+        stylist: invoice.stylistId['username'],
+        service: invoice.serviceId['name'],
+        total: invoice.total_amount,
+        phone: invoice.phone,
+        branch: invoice.branchId['name'],
+        reviewRating: invoice.reviewId?.['rating'] || null,
+        date: invoice.createdAt,
+      };
+    });
+
+    return {
+      total,
+      totalPages,
+      page,
+      limit,
+      invoices: invoiceConvert,
+    };
   }
 }

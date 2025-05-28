@@ -12,7 +12,7 @@ export class ServiceService {
 
   async getListService() {
     const services = await this.serviceModel.find({
-      isActive: true,
+      isDeleted: false,
     });
     return services;
   }

@@ -16,6 +16,7 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { ReviewModule } from './review/review.module';
 import { DashbroadModule } from './dashbroad/dashbroad.module';
+import { TasksModule } from './schedule/tasks.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { DashbroadModule } from './dashbroad/dashbroad.module';
     InvoicesModule,
     ReviewModule,
     DashbroadModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

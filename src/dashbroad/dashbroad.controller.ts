@@ -21,4 +21,16 @@ export class DashbroadController {
   async getChangeRevenue(@User() user: any) {
     return this.dashbroadService.getChangeRevenue(user);
   }
+
+  @Get('revenue-chart-day')
+  @UseGuards(JwtAuthGuard)
+  async getRevenueChartDay(@User() user: any) {
+    return this.dashbroadService.getRevenueChartDay(user);
+  }
+
+  @Get('revenue-chart-month')
+  @UseGuards(JwtAuthGuard)
+  async getRevenueChartMonth(@User() user: any) {
+    return this.dashbroadService.getRevenueChartMonth(user);
+  }
 }

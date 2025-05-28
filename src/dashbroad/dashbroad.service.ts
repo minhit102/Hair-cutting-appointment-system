@@ -1,6 +1,6 @@
 import { Injectable, Post, UseGuards } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Admin } from 'src/common/decorator/admin.decorator';
 import { User } from 'src/common/decorator/user.decorator';
 import { AdminDocument } from 'src/schemas/admin.schema';
@@ -13,6 +13,14 @@ import {
   HairStylist,
   HairStylistDocument,
 } from 'src/schemas/hair-stylist.schemas';
+import {
+  InvoiceChartDay,
+  InvoiceChartDayDocument,
+} from 'src/schemas/invoice-chart-day';
+import {
+  InvoiceChartMonth,
+  InvoiceChartMonthDocument,
+} from 'src/schemas/invoice-chart-month';
 import { Invoice, InvoiceDocument } from 'src/schemas/invoices.schema';
 import { UserDocument } from 'src/schemas/user.schema';
 
@@ -28,7 +36,40 @@ export class DashbroadService {
     private invoiceModel: Model<InvoiceDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
+    @InjectModel(InvoiceChartDay.name)
+    private invoiceChartDayModel: Model<InvoiceChartDayDocument>,
+    @InjectModel(InvoiceChartMonth.name)
+    private invoiceChartMonthModel: Model<InvoiceChartMonthDocument>,
   ) {}
+
+  async getRevenueChartDay(user: any) {
+    const findAdmin = await this.adminModel.findById(user.id);
+    const branchId = new mongoose.Types.ObjectId(findAdmin.branchId);
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30);
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() - 1);
+    const result = await this.invoiceChartDayModel.find({
+      branchId: branchId,
+      createdAt: { $gte: startDate, $lte: endDate },
+    });
+    return result;
+  }
+
+  async getRevenueChartMonth(user: any) {
+    const findAdmin = await this.adminModel.findById(user.id);
+    const branchId = new mongoose.Types.ObjectId(findAdmin.branchId);
+    const startDate = new Date();
+    startDate.setFullYear(startDate.getFullYear() - 1);
+    console.log(startDate, 'startDate');
+
+    const endDate = new Date();
+    const result = await this.invoiceChartMonthModel.find({
+      branchId: branchId,
+      createdAt: { $gte: startDate, $lte: endDate },
+    });
+    return result;
+  }
 
   async getChangeRevenue(user: any) {
     const findAdmin = await this.adminModel.findById(user.id);

@@ -9,16 +9,13 @@ export class Hairstyle {
   name: string;
 
   @Prop({ required: true })
-  description: string;
+  id: string;
+
+  @Prop({ required: true })
+  textPrompt: string;
 
   @Prop({ required: true })
   imageUrl: string;
-
-  @Prop({ required: false })
-  sampleVideoUrl?: string;
-
-  @Prop({ default: true })
-  isActive: boolean;
 }
 
 export const HairstyleSchema = SchemaFactory.createForClass(Hairstyle);

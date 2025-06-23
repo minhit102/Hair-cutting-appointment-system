@@ -6,6 +6,7 @@ import {
 } from 'src/schemas/hair-stylist.schemas';
 import { Model } from 'mongoose';
 import { Branch, BranchDocument } from 'src/schemas/branchs.schema';
+import { Hairstyle, HairstyleDocument } from 'src/schemas/hair-style.schema';
 
 @Injectable()
 export class HairStylistService {
@@ -14,6 +15,8 @@ export class HairStylistService {
     private hairStylistModel: Model<HairStylistDocument>,
     @InjectModel(Branch.name)
     private branchModel: Model<BranchDocument>,
+    @InjectModel(Hairstyle.name)
+    private hairstyleModel: Model<HairstyleDocument>,
   ) {}
   async findAll(user: any, branchId: string) {
     const checkBranch = await this.branchModel.findById(branchId);
@@ -29,5 +32,29 @@ export class HairStylistService {
       throw new NotFoundException('User not found');
     }
     return checkUser;
+  }
+
+  async createStyleHair({
+    id,
+    name,
+    textPrompt,
+    imageUrl,
+  }: {
+    id: string;
+    name: string;
+    textPrompt: string;
+    imageUrl: string;
+  }) {
+    await this.hairstyleModel.create({
+      id,
+      name,
+      textPrompt,
+      imageUrl,
+    });
+  }
+
+  async getAll() {
+    const data = await this.hairstyleModel.find();
+    return data;
   }
 }

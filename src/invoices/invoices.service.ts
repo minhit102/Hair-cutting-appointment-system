@@ -94,6 +94,7 @@ export class InvoicesService {
       .find({
         customerId: user.id,
       })
+      .sort({ createdAt: -1 })
       .populate('customerId')
       .populate('stylistId')
       .populate('serviceId')
@@ -148,6 +149,7 @@ export class InvoicesService {
     const [total, invoices] = await Promise.all([
       this.invoiceModel.countDocuments(queryBuilder.getQuery()),
       queryBuilder
+        .sort({ createdAt: -1 })
         .populate('stylistId')
         .populate('serviceId')
         .populate('reviewId')

@@ -57,4 +57,9 @@ export class HairStylistService {
     const data = await this.hairstyleModel.find();
     return data;
   }
+
+  async getAllStylist() {
+    const data = await this.hairStylistModel.find();
+    return data;
+  }
 }

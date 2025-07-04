@@ -20,6 +20,11 @@ export class HairStylistController {
     return this.hairStylistService.getAll();
   }
 
+  @Get('list-hair-stylist')
+  getStylist() {
+    return this.hairStylistService.getAllStylist();
+  }
+
   @Post()
   createStyleHair() {
     return this.hairStylistService.createStyleHair({

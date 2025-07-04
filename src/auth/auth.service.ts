@@ -41,6 +41,7 @@ export class AuthService {
 
   async register(registerUserDto: RegisterUserDto): Promise<any> {
     const { email, password, username, phone } = registerUserDto;
+    console.log('======================================================');
     const existUser = await this.userModel.findOne({
       email: email,
     });

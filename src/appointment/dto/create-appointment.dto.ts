@@ -17,6 +17,10 @@ export class CreateAppointmentDto {
 
   @IsString()
   @IsNotEmpty()
+  hairStylistId: string;
+
+  @IsString()
+  @IsNotEmpty()
   serviceId: string;
 
   @IsString()

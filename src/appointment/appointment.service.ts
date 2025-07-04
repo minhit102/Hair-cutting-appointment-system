@@ -43,7 +43,7 @@ export class AppointmentService {
     createAppointmentDto: CreateAppointmentDto;
     user: any;
   }) {
-    const { branchId, date, serviceId, phone, notes, username } =
+    const { branchId, date, serviceId, phone, notes, username, hairStylistId } =
       createAppointmentDto;
 
     const [findUser, branch, service] = await Promise.all([
@@ -78,6 +78,7 @@ export class AppointmentService {
     const newAppointment = await this.appointmentModel.create({
       branchId,
       customerId: findUser._id,
+      hairStylistId: hairStylistId,
       serviceId,
       phone,
       date: new Date(date),
@@ -102,6 +103,7 @@ export class AppointmentService {
       .find({
         customerId: new Types.ObjectId(user.id),
       })
+      .sort({ createdAt: -1 })
       .populate({
         path: 'serviceId',
         select: 'name', // chỉ lấy trường 'name' từ Service
@@ -177,5 +179,61 @@ export class AppointmentService {
     return new ResponseDto(HttpStatus.OK, HttpMessage.OK, {
       message: 'Appointment cancelled successfully',
     });
+  }
+
+  async getAvailableTimes(stylistId: string, date: string) {
+    const allSlots = [
+      '08:00',
+      '08:30',
+      '09:00',
+      '09:30',
+      '10:00',
+      '10:30',
+      '11:00',
+      '11:30',
+      '13:30',
+      '14:00',
+      '14:30',
+      '15:00',
+      '15:30',
+      '16:00',
+      '16:30',
+      '17:00',
+      '17:30',
+      '18:00',
+    ];
+
+    const dateTime = new Date(date);
+    const startOfDay = new Date(dateTime);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(dateTime);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const appointments = await this.appointmentModel.find({
+      hairStylistId: stylistId,
+      date: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+      status: AppointmentStatus.ACCEPTED,
+    });
+
+    console.log('=============================', appointments);
+
+    // Lấy danh sách giờ đã đặt
+    const bookedSlots = appointments.map((appt) => {
+      const date = new Date(appt.date);
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    });
+
+    // Trả về danh sách khung giờ còn trống
+    const availableSlots = allSlots.filter(
+      (slot) => !bookedSlots.includes(slot),
+    );
+
+    return availableSlots;
   }
 }

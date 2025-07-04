@@ -43,6 +43,24 @@ export class ReviewService {
     return this.reviewModel.find({ hairStylistId: stylistId }).exec();
   }
 
+  async findReviewByStylistId(stylistId: string) {
+    const findInvoice = await this.invoiceModel
+      .find({ stylistId })
+      .populate('reviewId')
+      .populate('serviceId');
+
+    // Populate review // Đảm bảo user cũng được populate để dùng invoice.user.name
+    const reviews = findInvoice
+      .filter((invoice) => invoice.reviewId) // Lọc invoice không có review
+      .map((invoice) => ({
+        review: invoice.reviewId, // Convert Mongoose document to plain object
+        userName: invoice.username || '',
+        service: invoice.serviceId, // Thêm tên user nếu có
+      }));
+
+    return reviews;
+  }
+
   async findOne(id: string): Promise<Review> {
     const review = await this.reviewModel.findById(id).exec();
     if (!review) {

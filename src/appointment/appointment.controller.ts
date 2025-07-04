@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Put,
+  Query,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
@@ -35,5 +36,13 @@ export class AppointmentController {
   @Put(':id/cancel')
   cancel(@Param('id') id: string) {
     return this.appointmentService.cancel(id);
+  }
+
+  @Get('available-times')
+  async getAvailableTimes(
+    @Query('stylistId') stylistId: string,
+    @Query('date') date: string,
+  ) {
+    return this.appointmentService.getAvailableTimes(stylistId, date);
   }
 }

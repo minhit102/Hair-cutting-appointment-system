@@ -20,10 +20,10 @@ import { Role } from 'src/common/enum/role.enum';
 export class BranchController {
   constructor(private readonly branchService: BranchService) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.SuperAdmin)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.SuperAdmin)
   @Post()
-  create(@Body() createBranchDto: CreateBranchDto) {
+  create(@Body() createBranchDto: any) {
     return this.branchService.create(createBranchDto);
   }
 

@@ -43,6 +43,11 @@ export class ReviewController {
     return this.reviewService.findByStylistId(stylistId);
   }
 
+  @Get('hair-stylist/:stylistId')
+  getReview(@Param('stylistId') stylistId: string) {
+    return this.reviewService.findReviewByStylistId(stylistId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reviewService.findOne(id);

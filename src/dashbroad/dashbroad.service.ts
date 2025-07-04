@@ -49,10 +49,12 @@ export class DashbroadService {
     startDate.setDate(startDate.getDate() - 30);
     const endDate = new Date();
     endDate.setDate(endDate.getDate() - 1);
-    const result = await this.invoiceChartDayModel.find({
-      branchId: branchId,
-      createdAt: { $gte: startDate, $lte: endDate },
-    });
+    const result = await this.invoiceChartDayModel
+      .find({
+        branchId: branchId,
+        createdAt: { $gte: startDate, $lte: endDate },
+      })
+      .sort({ createdAt: 1 });
     return result;
   }
 
@@ -64,10 +66,12 @@ export class DashbroadService {
     console.log(startDate, 'startDate');
 
     const endDate = new Date();
-    const result = await this.invoiceChartMonthModel.find({
-      branchId: branchId,
-      createdAt: { $gte: startDate, $lte: endDate },
-    });
+    const result = await this.invoiceChartMonthModel
+      .find({
+        branchId: branchId,
+        createdAt: { $gte: startDate, $lte: endDate },
+      })
+      .sort({ createdAt: 1 });
     return result;
   }
 

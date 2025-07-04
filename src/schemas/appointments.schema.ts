@@ -20,6 +20,9 @@ export class Appointment {
   @Prop({ type: String, required: true })
   username: string;
 
+  @Prop({ type: String, required: false })
+  hairStylistId: string;
+
   @Prop({ type: Date, required: true })
   date: Date;
 
